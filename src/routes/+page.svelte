@@ -1,47 +1,94 @@
-<script>
-    let world = "world";
 
-    function testGET() {
-        console.log("ya GET me?")
+<script>
+import Hero from "../components/hero.svelte";
+import Nav from "../components/nav.svelte"
+import Table from "../components/table.svelte";
+let results = $state([]);
+
+  async function testGET() {
+
+    try {
+        const data = await fetch('http://localhost:8888/conn.php')
+        .then(res => res.json())
+        .then(e => {
+            console.log("fetch response is: ", e)
+            e.forEach(item => {
+                results.push(item)
+            })
+        })
+    
+    } catch (err) {
+        console.error(err);
+    } finally {
+        console.log("done fetching")
     }
+  }
+
 </script>
 
+<Nav />
+<Hero />
 
-<div class="flex flex-col justify-center h-screen items-center">
-    <h1 class="font-black text-center">Hello {world}! <br/>This is my comic book logger app</h1>
-    <div class="flex gap-2 justify-center my-6">
-        <button class="btn btn-primary rounded-full" onclick={testGET}> GET Data </button>
-        <button class="btn btn-accent rounded-full"> Test DB Connection </button>        
-    </div>
+<div class="flex flex-col justify-center p-4">
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <form class="bg-base-300 rounded-xl flex flex-col gap-4 p-6">
-        <fieldset class="flex flex-col gap-2">
-            <label> Add comic title </label>
-            <input class="input input-text" type="text"/>
-        </fieldset>
-        <input class="btn btn-wide btn-warning rounded-full" value="POST data" type="submit"/>
-    </form>
+    <button onclick={testGET} class="btn btn-link link-warning"> Start loggin' </button> 
 
-    <span class="mt-12 mb-8"> Data will appear here ⬇️</span>
-    <table class="table">
-        <thead>
-            <tr>
-                <td> Year </td>
-                <td> Title </td>
-                <td> Issue </td>
-                <td> Publisher </td>
-                <td> Writer </td>                
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td> 1900 </td>
-                <td> spidey </td>
-                <td> #1 </td>
-                <td> MARVEL </td>
-                <td> Kirby </td>                
-            </tr>              
-        </tbody>
-      
-    </table>
+   <div class="flex flex-col text-center gap-4">
+        <!-- <table class="table table-xs">
+            <thead>
+                <tr>
+                    <td> Cover </td>
+                    <td> title </td>                
+                    <td> Description </td>
+                    <td> Author </td>
+                    <td> Issue </td>
+                    <td> Owned </td>                
+                    <td> price_paid </td>                
+                    <td> rarity </td>                
+                </tr>
+            </thead>
+            <tbody>
+              {#each results as comic}
+                <tr> 
+                    <td><img src={comic.cover} class="w-16" alt={comic.title} /></td>
+                    <td>{comic.title}</td>
+                    <td>{comic.description}</td>
+                    <td>{comic.author}</td>
+                    <td>{comic.issue}</td>
+                    <td>{comic.owned}</td>
+                    <td>{comic.price_paid}</td>
+                    <td><span class="badge badge-primary bade-sm">{comic.rarity}</span></td>
+                    <td>{comic.publisher}</td>
+                </tr>
+                {:else}
+                <tr> 
+                    <td>nothing here</td> 
+                </tr>
+              {/each}
+            </tbody>
+        </table>  -->
+        <div class="flex gap-6">
+            {#each results as comic}
+                <div class="flex items-center gap-2 text-left"> 
+                    <img src={comic.cover} class="w-32" alt={comic.title} />
+                    <div class="flex flex-col gap-1">
+                        <div class="font-bold text-md">{comic.title}</div>
+                        <div class="badge badge-primary bade-xs rounded-full ">{comic.rarity}</div>
+                        <div class="text-xs">Author : {comic.author}</div>
+                        <div class="text-xs">Iss : {comic.issue}</div>
+                        <div class="text-xs">Owned :{comic.owned > 0 ? ' ✅' : ' ❌'}</div>
+                        <div class="text-xs">Paid : {comic.price_paid}</div>
+                    </div>
+
+                </div>
+            {:else}
+                <div> 
+                    <p> No comics yet </p> 
+                </div>
+            {/each}              
+        </div>
+ 
+   </div>
+
 </div>
