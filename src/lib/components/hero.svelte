@@ -1,4 +1,5 @@
 
+
 <div class="bg-base-300 min-h-72 flex">
     <div class="m-auto max-w-7xl p-4 flex flex-col justify-center text-center w-full">
         <div class="badge badge-ghost badge-soft badge-sm mx-auto"> v1.0.0 </div>

@@ -1,3 +1,0 @@
-<div>
-    faq page
-</div>
